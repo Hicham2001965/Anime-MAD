@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime MAD - منصة الأنمي الاحترافية</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #0b0f1a; color: #e2e8f0; scroll-behavior: smooth; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .anime-card { transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .anime-card { transition: all 0.3s ease; position: relative; overflow: hidden; cursor: pointer; }
         .anime-card:hover { transform: translateY(-10px); border-color: #3b82f6; }
         .watched-badge { position: absolute; top: 10px; right: 10px; background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; display: none; }
         .watched .watched-badge { display: block; }
@@ -18,22 +19,31 @@
         .nav-link { position: relative; transition: 0.3s; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; right: 0; background: #3b82f6; transition: 0.3s; }
         .nav-link:hover::after { width: 100%; }
+        .episode-item { transition: all 0.3s ease; }
+        .episode-item:hover { background-color: rgba(59, 130, 246, 0.1); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1e293b; border-radius: 1rem; max-width: 90%; max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 glass p-4 flex justify-between items-center px-8">
         <div class="flex items-center gap-8">
-            <h1 class="text-3xl font-extrabold text-blue-500 tracking-tighter">ANIME<span class="text-white">MAD</span></h1>
+            <div class="flex items-center gap-3">
+                <img src="assets/logo.png" alt="Anime MAD" class="h-12 w-12 object-contain">
+                <h1 class="text-3xl font-extrabold text-blue-500 tracking-tighter">ANIME<span class="text-white">MAD</span></h1>
+            </div>
             <div class="hidden md:flex gap-6">
                 <a href="#home" class="nav-link font-bold">الرئيسية</a>
                 <a href="#anime-list" class="nav-link font-bold">قائمة الأنمي</a>
+                <a href="#death-note" class="nav-link font-bold">مذكرة الموت</a>
                 <a href="#favorites" class="nav-link font-bold">المفضلة</a>
             </div>
         </div>
         <div class="flex items-center gap-4">
             <div class="relative">
-                <input type="text" placeholder="ابحث عن أنمي..." class="bg-slate-800 border border-slate-700 rounded-full py-1 px-4 pr-10 focus:outline-none focus:border-blue-500 text-sm">
+                <input type="text" id="searchInput" placeholder="ابحث عن أنمي..." class="bg-slate-800 border border-slate-700 rounded-full py-1 px-4 pr-10 focus:outline-none focus:border-blue-500 text-sm">
                 <i class="fas fa-search absolute left-3 top-2 text-slate-500"></i>
             </div>
             <button class="bg-blue-600 hover:bg-blue-700 px-4 py-1 rounded-lg text-sm font-bold transition">دخول</button>
@@ -41,58 +51,228 @@
     </nav>
 
     <main id="home" class="p-4 md:p-8 max-w-7xl mx-auto">
-        <!-- Hero Section / Player -->
+        <!-- Hero Section -->
         <section class="mb-12">
+            <div class="relative rounded-2xl overflow-hidden shadow-2xl mb-8" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                <img src="assets/anime-hero-bg.png" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-30">
+                <div class="relative p-12 text-center z-10">
+                    <img src="assets/logo.png" alt="Logo" class="h-24 w-24 mx-auto mb-4 object-contain">
+                    <h2 class="text-4xl font-bold text-white mb-2">Anime MAD Dashboard</h2>
+                    <p class="text-xl text-blue-200">لوحة تحكم تفاعلية لاستكشاف عالم الأنمي</p>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="glass p-6 rounded-2xl text-center">
+                    <i class="fas fa-tv text-3xl text-blue-500 mb-2"></i>
+                    <h3 class="text-sm text-slate-400">إجمالي الأنميات</h3>
+                    <p class="text-2xl font-bold">8</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <i class="fas fa-play-circle text-3xl text-orange-500 mb-2"></i>
+                    <h3 class="text-sm text-slate-400">إجمالي الحلقات</h3>
+                    <p class="text-2xl font-bold">1703+</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <i class="fas fa-star text-3xl text-yellow-500 mb-2"></i>
+                    <h3 class="text-sm text-slate-400">متوسط التقييم</h3>
+                    <p class="text-2xl font-bold">8.7/10</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <i class="fas fa-eye text-3xl text-purple-500 mb-2"></i>
+                    <h3 class="text-sm text-slate-400">إجمالي المشاهدات</h3>
+                    <p class="text-2xl font-bold">16.5M</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Death Note Episodes Section -->
+        <section id="death-note" class="mb-12">
             <div class="section-title">
-                <h2 class="text-2xl font-bold">مشاهدة الآن: ون بيس - الحلقة 1</h2>
+                <h2 class="text-2xl font-bold">مذكرة الموت - جميع الحلقات (37)</h2>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2">
-                    <div class="relative pt-[56.25%] rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-black">
-                        <iframe id="mainPlayer" class="absolute inset-0 w-full h-full" src="https://www.dailymotion.com/embed/video/x9y5r2e" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                    <div class="mt-6 glass p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-blue-400">ون بيس - مغامرة الفجر</h3>
-                            <button id="watched-button" onclick="markAsWatched(this)" class="text-sm bg-slate-700 hover:bg-green-600 px-4 py-2 rounded-full transition">
-                                <i class="fas fa-check ml-2"></i> تحديد كـ "تمت المشاهدة"
-                            </button>
-                        </div>
-                        <p class="text-slate-400 leading-relaxed">تبدأ قصة لوفي، الشاب الذي يطمح لأن يصبح ملك القراصنة، في هذه الحلقة الأسطورية حيث يلتقي بأول أصدقائه ويبدأ رحلته في البحر الكبير.</p>
-                    </div>
-
-                    <!-- Comments Section -->
-                    <div id="comments" class="mt-8 glass p-6 rounded-2xl">
-                        <h3 class="text-xl font-bold mb-6"><i class="fas fa-comments ml-2 text-blue-500"></i> التعليقات (3)</h3>
-                        <div class="space-y-6">
-                            <div class="flex gap-4">
-                                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-bold">H</div>
-                                <div class="flex-1 bg-slate-800/50 p-4 rounded-xl">
-                                    <div class="flex justify-between mb-2">
-                                        <span class="font-bold text-sm">هشام</span>
-                                        <span class="text-xs text-slate-500">منذ ساعتين</span>
-                                    </div>
-                                    <p class="text-sm">بداية أسطورية لأنمي أسطوري! شكراً على الرفع.</p>
+                    <div class="glass p-6 rounded-2xl mb-6">
+                        <div class="flex items-start gap-4 mb-6">
+                            <img src="assets/death-note.jpg" alt="Death Note" class="w-32 h-48 object-cover rounded-lg shadow-lg">
+                            <div>
+                                <h3 class="text-2xl font-bold text-blue-400 mb-2">مذكرة الموت</h3>
+                                <p class="text-slate-400 mb-4">Death Note - سلسلة أنمي يابانية درامية نفسية تدور حول طالب ثانوي يكتشف دفتراً غامضاً يمنحه قوة قتل أي شخص.</p>
+                                <div class="flex gap-4 text-sm">
+                                    <span class="text-yellow-400"><i class="fas fa-star ml-1"></i>8.6/10</span>
+                                    <span class="text-blue-400"><i class="fas fa-play-circle ml-1"></i>37 حلقة</span>
+                                    <span class="text-green-400"><i class="fas fa-check-circle ml-1"></i>مكتمل</span>
                                 </div>
                             </div>
-                            <!-- Input Comment -->
-                            <div class="mt-6">
-                                <textarea placeholder="اكتب تعليقك هنا..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm focus:outline-none focus:border-blue-500 h-24"></textarea>
-                                <button class="mt-2 bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-sm font-bold transition float-left">إرسال التعليق</button>
+                        </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="text-xl font-bold mb-4">قائمة الحلقات</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(1, 'الولادة الجديدة', 'Rebirth', 'يكتشف لايت ياجامي دفتراً غامضاً يمنح قوة قتل أي شخص')">
+                                <div class="text-sm font-bold">الحلقة 1</div>
+                                <div class="text-xs text-slate-400">الولادة الجديدة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(2, 'المواجهة', 'Confrontation', 'يختبر لايت قوة دفتر الموت ويقابل ريوك')">
+                                <div class="text-sm font-bold">الحلقة 2</div>
+                                <div class="text-xs text-slate-400">المواجهة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(3, 'الصفقات', 'Dealings', 'يبدأ لايت خطته لإنشاء عالم جديد')">
+                                <div class="text-sm font-bold">الحلقة 3</div>
+                                <div class="text-xs text-slate-400">الصفقات</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(4, 'المطاردة', 'Pursuit', 'تبدأ الشرطة في التحقيق')">
+                                <div class="text-sm font-bold">الحلقة 4</div>
+                                <div class="text-xs text-slate-400">المطاردة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(5, 'التكتيكات', 'Tactics', 'يلتقي لايت بـ L')">
+                                <div class="text-sm font-bold">الحلقة 5</div>
+                                <div class="text-xs text-slate-400">التكتيكات</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(6, 'فضح الأقنعة', 'Unmasking', 'يبدأ L بالاشتباه بأن لايت هو القاتل')">
+                                <div class="text-sm font-bold">الحلقة 6</div>
+                                <div class="text-xs text-slate-400">فضح الأقنعة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(7, 'المتأخر', 'Overdue', 'تصبح عائلة لايت متورطة')">
+                                <div class="text-sm font-bold">الحلقة 7</div>
+                                <div class="text-xs text-slate-400">المتأخر</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(8, 'النظرة الحادة', 'Glare', 'يستمر الصراع النفسي')">
+                                <div class="text-sm font-bold">الحلقة 8</div>
+                                <div class="text-xs text-slate-400">النظرة الحادة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(9, 'الرهان', 'Wager', 'يقترح L رهاناً خطيراً')">
+                                <div class="text-sm font-bold">الحلقة 9</div>
+                                <div class="text-xs text-slate-400">الرهان</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(10, 'القناعة', 'Conviction', 'يتم اختبار قناعة لايت')">
+                                <div class="text-sm font-bold">الحلقة 10</div>
+                                <div class="text-xs text-slate-400">القناعة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(11, 'عدم الصبر', 'Impatience', 'يصبح لايت غير صبور')">
+                                <div class="text-sm font-bold">الحلقة 11</div>
+                                <div class="text-xs text-slate-400">عدم الصبر</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(12, 'الولادة الجديدة 2', 'Rebirth 2', 'تبدأ مرحلة جديدة')">
+                                <div class="text-sm font-bold">الحلقة 12</div>
+                                <div class="text-xs text-slate-400">الولادة الجديدة 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(13, 'الاعتراف', 'Confession', 'يعترف لايت بمشاعره')">
+                                <div class="text-sm font-bold">الحلقة 13</div>
+                                <div class="text-xs text-slate-400">الاعتراف</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(14, 'الاقتراح', 'Proposal', 'تقترح ميسا المساعدة')">
+                                <div class="text-sm font-bold">الحلقة 14</div>
+                                <div class="text-xs text-slate-400">الاقتراح</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(15, 'الرهان 2', 'Wager 2', 'تزداد الرهانات')">
+                                <div class="text-sm font-bold">الحلقة 15</div>
+                                <div class="text-xs text-slate-400">الرهان 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(16, 'التنفيذ', 'Execution', 'ينفذ لايت خطته')">
+                                <div class="text-sm font-bold">الحلقة 16</div>
+                                <div class="text-xs text-slate-400">التنفيذ</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(17, 'التنفيذ 2', 'Execution 2', 'تصل الخطة لذروتها')">
+                                <div class="text-sm font-bold">الحلقة 17</div>
+                                <div class="text-xs text-slate-400">التنفيذ 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(18, 'ماتسودا', 'Matsuda', 'يلعب ماتسودا دوراً حاسماً')">
+                                <div class="text-sm font-bold">الحلقة 18</div>
+                                <div class="text-xs text-slate-400">ماتسودا</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(19, 'التحكيم', 'Arbitration', 'يدخل محكم جديد')">
+                                <div class="text-sm font-bold">الحلقة 19</div>
+                                <div class="text-xs text-slate-400">التحكيم</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(20, 'التحكيم 2', 'Arbitration 2', 'يستمر التحكيم')">
+                                <div class="text-sm font-bold">الحلقة 20</div>
+                                <div class="text-xs text-slate-400">التحكيم 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(21, 'ماتسودا 2', 'Matsuda 2', 'يصبح دور ماتسودا أهم')">
+                                <div class="text-sm font-bold">الحلقة 21</div>
+                                <div class="text-xs text-slate-400">ماتسودا 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(22, 'لند إل تايلور', 'Lind L. Tailor', 'يظهر شخص غامض')">
+                                <div class="text-sm font-bold">الحلقة 22</div>
+                                <div class="text-xs text-slate-400">لند إل تايلور</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(23, 'الخلافة', 'Succession', 'تبدأ خلافة السلطة')">
+                                <div class="text-sm font-bold">الحلقة 23</div>
+                                <div class="text-xs text-slate-400">الخلافة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(24, 'عالم جديد', 'New World', 'يظهر نظام عالمي جديد')">
+                                <div class="text-sm font-bold">الحلقة 24</div>
+                                <div class="text-xs text-slate-400">عالم جديد</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(25, 'الصمت', 'Silence', 'يسود الصمت العالم')">
+                                <div class="text-sm font-bold">الحلقة 25</div>
+                                <div class="text-xs text-slate-400">الصمت</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(26, 'مظهر جديد', 'New Appearance', 'يغير مظهر جديد كل شيء')">
+                                <div class="text-sm font-bold">الحلقة 26</div>
+                                <div class="text-xs text-slate-400">مظهر جديد</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(27, 'الإلهاء', 'Distraction', 'يؤدي الإلهاء لمضاعفات')">
+                                <div class="text-sm font-bold">الحلقة 27</div>
+                                <div class="text-xs text-slate-400">الإلهاء</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(28, 'الاعتراف 2', 'Confession 2', 'اعتراف آخر يغير اللعبة')">
+                                <div class="text-sm font-bold">الحلقة 28</div>
+                                <div class="text-xs text-slate-400">الاعتراف 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(29, 'الظروف', 'Circumstances', 'تفرض الظروف قرارات')">
+                                <div class="text-sm font-bold">الحلقة 29</div>
+                                <div class="text-xs text-slate-400">الظروف</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(30, 'محو', 'Erase', 'يتم محو الذكريات')">
+                                <div class="text-sm font-bold">الحلقة 30</div>
+                                <div class="text-xs text-slate-400">محو</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(31, 'الظهور', 'Emergence', 'تظهر قوى جديدة')">
+                                <div class="text-sm font-bold">الحلقة 31</div>
+                                <div class="text-xs text-slate-400">الظهور</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(32, 'الفخ', 'Trap', 'يتم نصب فخ')">
+                                <div class="text-sm font-bold">الحلقة 32</div>
+                                <div class="text-xs text-slate-400">الفخ</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(33, 'الرائحة', 'Scent', 'تقترب رائحة النصر')">
+                                <div class="text-sm font-bold">الحلقة 33</div>
+                                <div class="text-xs text-slate-400">الرائحة</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(34, 'الجنون', 'Frenzy', 'يسيطر الجنون')">
+                                <div class="text-sm font-bold">الحلقة 34</div>
+                                <div class="text-xs text-slate-400">الجنون</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(35, 'الحكم', 'Judgment', 'يقترب الحكم النهائي')">
+                                <div class="text-sm font-bold">الحلقة 35</div>
+                                <div class="text-xs text-slate-400">الحكم</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(36, 'عالم جديد 2', 'New World 2', 'يتم الكشف عن العالم')">
+                                <div class="text-sm font-bold">الحلقة 36</div>
+                                <div class="text-xs text-slate-400">عالم جديد 2</div>
+                            </div>
+                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="showEpisode(37, 'عالم جديد 3', 'New World 3', 'الحلقة الأخيرة')">
+                                <div class="text-sm font-bold">الحلقة 37</div>
+                                <div class="text-xs text-slate-400">عالم جديد 3</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar: Last Watched & Favorites -->
+                <!-- Sidebar -->
                 <div class="space-y-8">
                     <div id="last-watched" class="glass p-6 rounded-2xl">
                         <h3 class="font-bold mb-4 text-blue-400"><i class="fas fa-history ml-2"></i> آخر المشاهدات</h3>
                         <div class="space-y-4">
                             <div class="flex gap-3 items-center p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition">
-                                <img src="https://image.tmdb.org/t/p/w200/867Z9ZpYpS9pS9pS9pS9pS9pS9pS9p.jpg" class="w-12 h-16 object-cover rounded shadow">
+                                <img src="assets/death-note.jpg" class="w-12 h-16 object-cover rounded shadow">
                                 <div>
-                                    <h4 class="text-sm font-bold">ون بيس</h4>
+                                    <h4 class="text-sm font-bold">مذكرة الموت</h4>
                                     <p class="text-xs text-slate-500">الحلقة 1 - منذ 5 دقائق</p>
                                 </div>
                             </div>
@@ -102,27 +282,6 @@
                     <div id="favorites" class="glass p-6 rounded-2xl">
                         <h3 class="font-bold mb-4 text-pink-500"><i class="fas fa-heart ml-2"></i> أنمياتي المفضلة</h3>
                         <p class="text-sm text-slate-500 text-center py-4 italic">القائمة فارغة حالياً.. أضف أنمياتك المفضلة هنا!</p>
-                    </div>
-                    
-                    <!-- New Section: Suggested Anime -->
-                    <div id="suggested-anime" class="glass p-6 rounded-2xl">
-                        <h3 class="font-bold mb-4 text-yellow-400"><i class="fas fa-star ml-2"></i> أنميات مقترحة</h3>
-                        <div class="space-y-4">
-                            <div class="flex gap-3 items-center p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition">
-                                <img src="https://image.tmdb.org/t/p/w200/4q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-12 h-16 object-cover rounded shadow">
-                                <div>
-                                    <h4 class="text-sm font-bold">هجوم العمالقة</h4>
-                                    <p class="text-xs text-slate-500">موسم 4</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3 items-center p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition">
-                                <img src="https://image.tmdb.org/t/p/w200/6q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-12 h-16 object-cover rounded shadow">
-                                <div>
-                                    <h4 class="text-sm font-bold">مذكرة الموت</h4>
-                                    <p class="text-xs text-slate-500">كامل</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -134,45 +293,39 @@
                 <h2 class="text-2xl font-bold">قائمة الأنمي</h2>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                <!-- Anime Card 1 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer">
+                <div class="anime-card glass p-3 rounded-xl">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/867Z9ZpYpS9pS9pS9pS9pS9pS9pS9p.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="assets/one-piece.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">ون بيس</h4>
                     <p class="text-xs text-slate-400">مغامرات، أكشن</p>
                 </div>
-                <!-- Anime Card 2 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer">
+                <div class="anime-card glass p-3 rounded-xl">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/4q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="assets/attack-on-titan.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">هجوم العمالقة</h4>
                     <p class="text-xs text-slate-400">دراما، خيال</p>
                 </div>
-                <!-- Anime Card 3 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer watched">
+                <div class="anime-card glass p-3 rounded-xl watched">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/6q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="assets/death-note.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">مذكرة الموت</h4>
                     <p class="text-xs text-slate-400">غموض، نفسي</p>
                 </div>
-                <!-- Anime Card 4 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer">
+                <div class="anime-card glass p-3 rounded-xl">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/7q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=300&fit=crop" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">جوجوتسو كايسن</h4>
                     <p class="text-xs text-slate-400">شياطين، خارق</p>
                 </div>
-                <!-- Anime Card 5 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer">
+                <div class="anime-card glass p-3 rounded-xl">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/8q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=300&fit=crop" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">قاتل الشياطين</h4>
                     <p class="text-xs text-slate-400">تاريخي، شياطين</p>
                 </div>
-                <!-- Anime Card 6 -->
-                <div class="anime-card glass p-3 rounded-xl cursor-pointer">
+                <div class="anime-card glass p-3 rounded-xl">
                     <span class="watched-badge">شوهد</span>
-                    <img src="https://image.tmdb.org/t/p/w200/9q1yJ4j7qg5v5w5v5w5v5w5v5w5v.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=300&fit=crop" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
                     <h4 class="text-sm font-bold truncate">هنتر x هنتر</h4>
                     <p class="text-xs text-slate-400">مغامرات، فنتازيا</p>
                 </div>
@@ -181,12 +334,25 @@
 
     </main>
 
+    <!-- Episode Modal -->
+    <div id="episodeModal" class="modal items-center justify-center">
+        <div class="modal-content p-8 m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="episodeTitle" class="text-2xl font-bold text-blue-400"></h2>
+                <button onclick="closeModal()" class="text-2xl text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <p id="episodeDesc" class="text-slate-300 mb-6"></p>
+            <div class="bg-slate-900 p-4 rounded-lg">
+                <p class="text-sm text-slate-400">محتوى الحلقة سيتم تحديثه قريباً</p>
+            </div>
+        </div>
+    </div>
+
     <footer class="glass p-6 text-center text-sm text-slate-400 mt-12">
         <p>&copy; 2026 AnimeMAD. جميع الحقوق محفوظة.</p>
     </footer>
 
     <script>
-        // Fix 4: Watched Mark Functionality
         function markAsWatched(button) {
             const container = button.closest('.glass').parentElement.parentElement;
             const isWatched = container.classList.toggle('watched');
@@ -200,13 +366,18 @@
                 button.classList.remove('bg-green-600', 'hover:bg-green-700');
                 button.classList.add('bg-slate-700', 'hover:bg-green-600');
             }
-            
-            // For the main player, we assume the whole section is the "episode"
-            const episodeTitle = container.querySelector('h3').textContent;
-            console.log(`Episode "${episodeTitle}" marked as ${isWatched ? 'watched' : 'unwatched'}.`);
         }
 
-        // Fix 1: Smooth scrolling for navigation links
+        function showEpisode(number, titleAr, titleEn, desc) {
+            document.getElementById('episodeTitle').textContent = `الحلقة ${number}: ${titleAr}`;
+            document.getElementById('episodeDesc').textContent = desc;
+            document.getElementById('episodeModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('episodeModal').classList.remove('active');
+        }
+
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -216,11 +387,13 @@
             });
         });
 
-        // Placeholder for future functionality (e.g., adding to favorites)
-        function addToFavorites(animeId) {
-            console.log(`Anime ID ${animeId} added to favorites.`);
-            // In a real app, this would be an API call
-        }
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.anime-card').forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                card.style.display = title.includes(searchTerm) ? '' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
