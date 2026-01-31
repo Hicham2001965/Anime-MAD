@@ -3,439 +3,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime MAD - منصة الأنمي الاحترافية</title>
+    <meta name="description" content="OtakuHub - منصة الأنمي الاحترافية">
+    <meta name="theme-color" content="#0b0f1a">
+    <title>OtakuHub - منصة الأنمي الاحترافية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/logo-otakuhub.png">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0b0f1a; color: #e2e8f0; scroll-behavior: smooth; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .anime-card { transition: all 0.3s ease; position: relative; overflow: hidden; cursor: pointer; }
-        .anime-card:hover { transform: translateY(-10px); border-color: #3b82f6; }
-        .watched-badge { position: absolute; top: 10px; right: 10px; background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; display: none; }
-        .watched .watched-badge { display: block; }
-        .section-title { border-right: 4px solid #3b82f6; padding-right: 15px; margin-bottom: 25px; }
-        .nav-link { position: relative; transition: 0.3s; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; right: 0; background: #3b82f6; transition: 0.3s; }
-        .nav-link:hover::after { width: 100%; }
-        .episode-item { transition: all 0.3s ease; }
-        .episode-item:hover { background-color: rgba(59, 130, 246, 0.1); }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; }
-        .modal.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: #1e293b; border-radius: 1rem; max-width: 90%; max-height: 90vh; overflow-y: auto; }
-        .player-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-        .player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Cairo', 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0b0f1a 0%, #1a1f2e 100%);
+            color: #e2e8f0; 
+            min-height: 100vh;
+        }
+        
+        .glass { 
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .anime-card {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 1rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .anime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+        
+        .anime-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        }
+        
+        .anime-card:hover::before {
+            opacity: 1;
+        }
+        
+        .episode-item {
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .episode-item:hover {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+            transform: translateX(-4px);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            right: 0;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 1.5rem;
+            max-width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .player-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: #000;
+        }
+        
+        .player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .navbar {
+            animation: slideDown 0.5s ease;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #60a5fa, #a78bfa);
+        }
+        
+        .lang-selector {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.5);
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .lang-btn:hover,
+        .lang-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-color: #3b82f6;
+            color: white;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .badge-new { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; }
+        .badge-popular { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #1f2937; }
+        .badge-trending { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                max-width: 100%;
+                border-radius: 1rem 1rem 0 0;
+                max-height: 95vh;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 glass p-4 flex justify-between items-center px-8">
-        <div class="flex items-center gap-8">
-            <div class="flex items-center gap-3">
-                <img src="assets/logo.png" alt="Anime MAD" class="h-12 w-12 object-contain">
-                <h1 class="text-3xl font-extrabold text-blue-500 tracking-tighter">ANIME<span class="text-white">MAD</span></h1>
+    <nav class="navbar sticky top-0 z-50 glass p-4 md:p-6 flex justify-between items-center px-4 md:px-8 border-b border-slate-700">
+        <div class="flex items-center gap-4 md:gap-8">
+            <div class="flex items-center gap-2 md:gap-3">
+                <img src="assets/logo-otakuhub.png" alt="OtakuHub" class="h-10 w-10 md:h-12 md:w-12 object-contain">
+                <h1 class="text-xl md:text-3xl font-extrabold gradient-text">Otaku<span class="text-white">Hub</span></h1>
             </div>
-            <div class="hidden md:flex gap-6">
-                <a href="#home" class="nav-link font-bold">الرئيسية</a>
-                <a href="#one-piece" class="nav-link font-bold">ون بيس</a>
-                <a href="#death-note" class="nav-link font-bold">مذكرة الموت</a>
-                <a href="#anime-list" class="nav-link font-bold">المزيد</a>
+            <div class="hidden lg:flex gap-4 md:gap-6">
+                <a href="#home" class="nav-link active" onclick="setActive(this)">الرئيسية</a>
+                <a href="#one-piece" class="nav-link" onclick="setActive(this)">ون بيس</a>
+                <a href="#popular" class="nav-link" onclick="setActive(this)">الشهيرة</a>
+                <a href="#favorites" class="nav-link" onclick="setActive(this)">المفضلة</a>
             </div>
         </div>
-        <div class="flex items-center gap-4">
+        
+        <div class="flex items-center gap-2 md:gap-4">
+            <div class="lang-selector">
+                <button class="lang-btn active" onclick="changeLanguage('ar')">العربية</button>
+                <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('fr')">FR</button>
+                <button class="lang-btn" onclick="changeLanguage('es')">ES</button>
+            </div>
+            
+            <div class="relative hidden md:block">
+                <input type="text" id="searchInput" placeholder="ابحث..." class="bg-slate-800 border border-slate-700 rounded-full py-2 px-4 pr-10 focus:outline-none focus:border-blue-500 text-sm w-48">
+                <i class="fas fa-search absolute left-3 top-3 text-slate-500"></i>
+            </div>
+            
             <div class="relative">
-                <input type="text" id="searchInput" placeholder="ابحث عن أنمي..." class="bg-slate-800 border border-slate-700 rounded-full py-1 px-4 pr-10 focus:outline-none focus:border-blue-500 text-sm">
-                <i class="fas fa-search absolute left-3 top-2 text-slate-500"></i>
+                <button class="p-2 rounded-full bg-slate-800 hover:bg-slate-700 transition" onclick="toggleUserMenu()">
+                    <i class="fas fa-user text-blue-400"></i>
+                </button>
+                <div id="userMenu" class="hidden absolute top-12 right-0 glass rounded-lg p-4 min-w-48 shadow-lg">
+                    <button onclick="openLoginModal()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">تسجيل الدخول</button>
+                    <button onclick="openRegisterModal()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">إنشاء حساب</button>
+                </div>
             </div>
         </div>
     </nav>
 
+    <!-- Main Content -->
     <main id="home" class="p-4 md:p-8 max-w-7xl mx-auto">
         <!-- Hero Section -->
         <section class="mb-12">
             <div class="relative rounded-2xl overflow-hidden shadow-2xl mb-8" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
-                <img src="assets/anime-hero-bg.png" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-30">
-                <div class="relative p-12 text-center z-10">
-                    <img src="assets/logo.png" alt="Logo" class="h-24 w-24 mx-auto mb-4 object-contain">
-                    <h2 class="text-4xl font-bold text-white mb-2">Anime MAD Dashboard</h2>
-                    <p class="text-xl text-blue-200">منصة تفاعلية لمشاهدة أفضل الأنميات</p>
+                <img src="assets/anime-hero-bg.png" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-20">
+                <div class="relative p-8 md:p-12 text-center z-10">
+                    <img src="assets/logo-otakuhub.png" alt="Logo" class="h-20 w-20 md:h-24 md:w-24 mx-auto mb-4 object-contain">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">OtakuHub</h2>
+                    <p class="text-lg md:text-xl text-blue-200">منصة تفاعلية احترافية لمشاهدة أفضل الأنميات</p>
                 </div>
             </div>
 
             <!-- Statistics -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="glass p-6 rounded-2xl text-center">
-                    <i class="fas fa-tv text-3xl text-blue-500 mb-2"></i>
-                    <h3 class="text-sm text-slate-400">إجمالي الأنميات</h3>
-                    <p class="text-2xl font-bold">8+</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+                <div class="glass p-4 md:p-6 rounded-2xl text-center hover:border-blue-500 transition">
+                    <i class="fas fa-tv text-2xl md:text-3xl text-blue-500 mb-2"></i>
+                    <h3 class="text-xs md:text-sm text-slate-400">إجمالي الأنميات</h3>
+                    <p class="text-xl md:text-2xl font-bold">50+</p>
                 </div>
-                <div class="glass p-6 rounded-2xl text-center">
-                    <i class="fas fa-play-circle text-3xl text-orange-500 mb-2"></i>
-                    <h3 class="text-sm text-slate-400">إجمالي الحلقات</h3>
-                    <p class="text-2xl font-bold">1000+</p>
+                <div class="glass p-4 md:p-6 rounded-2xl text-center hover:border-orange-500 transition">
+                    <i class="fas fa-play-circle text-2xl md:text-3xl text-orange-500 mb-2"></i>
+                    <h3 class="text-xs md:text-sm text-slate-400">إجمالي الحلقات</h3>
+                    <p class="text-xl md:text-2xl font-bold">2000+</p>
                 </div>
-                <div class="glass p-6 rounded-2xl text-center">
-                    <i class="fas fa-star text-3xl text-yellow-500 mb-2"></i>
-                    <h3 class="text-sm text-slate-400">متوسط التقييم</h3>
-                    <p class="text-2xl font-bold">8.8/10</p>
+                <div class="glass p-4 md:p-6 rounded-2xl text-center hover:border-yellow-500 transition">
+                    <i class="fas fa-star text-2xl md:text-3xl text-yellow-500 mb-2"></i>
+                    <h3 class="text-xs md:text-sm text-slate-400">متوسط التقييم</h3>
+                    <p class="text-xl md:text-2xl font-bold">8.8/10</p>
                 </div>
-                <div class="glass p-6 rounded-2xl text-center">
-                    <i class="fas fa-eye text-3xl text-purple-500 mb-2"></i>
-                    <h3 class="text-sm text-slate-400">إجمالي المشاهدات</h3>
-                    <p class="text-2xl font-bold">20M+</p>
+                <div class="glass p-4 md:p-6 rounded-2xl text-center hover:border-purple-500 transition">
+                    <i class="fas fa-eye text-2xl md:text-3xl text-purple-500 mb-2"></i>
+                    <h3 class="text-xs md:text-sm text-slate-400">إجمالي المشاهدات</h3>
+                    <p class="text-xl md:text-2xl font-bold">50M+</p>
                 </div>
             </div>
         </section>
 
         <!-- One Piece Section -->
         <section id="one-piece" class="mb-12">
-            <div class="section-title">
-                <h2 class="text-2xl font-bold">ون بيس - الحلقات الأولى</h2>
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded"></div>
+                <h2 class="text-2xl md:text-3xl font-bold">ون بيس - One Piece</h2>
+                <span class="badge badge-trending ml-auto">الأكثر شهرة</span>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="lg:col-span-2">
-                    <div class="glass p-6 rounded-2xl mb-6">
-                        <div class="flex items-start gap-4 mb-6">
-                            <img src="assets/one-piece.jpg" alt="One Piece" class="w-32 h-48 object-cover rounded-lg shadow-lg">
-                            <div>
-                                <h3 class="text-2xl font-bold text-blue-400 mb-2">ون بيس</h3>
-                                <p class="text-slate-400 mb-4">One Piece - أطول سلسلة أنمي مستمرة تتابع مغامرات لوفي وطاقمه في البحر الكبير بحثاً عن الكنز الأسطوري.</p>
-                                <div class="flex gap-4 text-sm">
-                                    <span class="text-yellow-400"><i class="fas fa-star ml-1"></i>8.8/10</span>
-                                    <span class="text-blue-400"><i class="fas fa-play-circle ml-1"></i>1000+ حلقة</span>
+                    <div class="glass p-4 md:p-6 rounded-2xl mb-6">
+                        <div class="flex flex-col md:flex-row items-start gap-4 mb-6">
+                            <img src="assets/one-piece.jpg" alt="One Piece" class="w-full md:w-32 h-48 object-cover rounded-lg shadow-lg">
+                            <div class="flex-1">
+                                <h3 class="text-2xl md:text-3xl font-bold text-blue-400 mb-2">ون بيس</h3>
+                                <p class="text-slate-400 mb-4 text-sm md:text-base">One Piece - أطول سلسلة أنمي مستمرة تتابع مغامرات لوفي وطاقمه في البحر الكبير بحثاً عن الكنز الأسطوري. تجربة مليئة بالإثارة والمغامرة والعاطفة.</p>
+                                <div class="flex flex-wrap gap-3 md:gap-4 text-sm">
+                                    <span class="text-yellow-400"><i class="fas fa-star ml-1"></i>9.0/10</span>
+                                    <span class="text-blue-400"><i class="fas fa-play-circle ml-1"></i>1050+ حلقة</span>
                                     <span class="text-green-400"><i class="fas fa-play ml-1"></i>مستمر</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="glass p-6 rounded-2xl">
-                        <h3 class="text-xl font-bold mb-4">الحلقات</h3>
-                        <div class="space-y-3">
-                            <div class="episode-item glass p-4 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('One Piece', 1, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">الحلقة 1: مغامرة جديدة</div>
-                                        <div class="text-xs text-slate-400">بداية أسطورية لقصة لوفي</div>
-                                    </div>
-                                    <i class="fas fa-play text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="episode-item glass p-4 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('One Piece', 2, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">الحلقة 2: الكنز الأسطوري</div>
-                                        <div class="text-xs text-slate-400">لقاء مع زورو</div>
-                                    </div>
-                                    <i class="fas fa-play text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="episode-item glass p-4 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('One Piece', 3, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">الحلقة 3: الطاقم يتشكل</div>
-                                        <div class="text-xs text-slate-400">انضمام ناميه</div>
-                                    </div>
-                                    <i class="fas fa-play text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="episode-item glass p-4 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('One Piece', 4, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">الحلقة 4: الخطر في الغابة</div>
-                                        <div class="text-xs text-slate-400">أول معركة حقيقية</div>
-                                    </div>
-                                    <i class="fas fa-play text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="episode-item glass p-4 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('One Piece', 5, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">الحلقة 5: الوصول للقرية</div>
-                                        <div class="text-xs text-slate-400">مساعدة القرية</div>
-                                    </div>
-                                    <i class="fas fa-play text-blue-500"></i>
-                                </div>
-                            </div>
+                    <div class="glass p-4 md:p-6 rounded-2xl">
+                        <h3 class="text-lg md:text-xl font-bold mb-4">الحلقات</h3>
+                        <div id="onePieceEpisodes" class="space-y-2 md:space-y-3">
+                            <!-- Episodes will be loaded here -->
                         </div>
+                        <button onclick="loadMoreEpisodes('one-piece')" class="w-full mt-4 py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-bold">عرض المزيد من الحلقات</button>
                     </div>
                 </div>
 
-                <div class="space-y-8">
-                    <div class="glass p-6 rounded-2xl">
+                <div class="space-y-4 md:space-y-8">
+                    <div class="glass p-4 md:p-6 rounded-2xl">
                         <h3 class="font-bold mb-4 text-blue-400"><i class="fas fa-info-circle ml-2"></i> معلومات</h3>
                         <div class="space-y-3 text-sm">
                             <div><span class="text-slate-400">النوع:</span> <span class="text-blue-300">مغامرات، أكشن</span></div>
                             <div><span class="text-slate-400">الحالة:</span> <span class="text-green-300">مستمر</span></div>
                             <div><span class="text-slate-400">السنة:</span> <span class="text-blue-300">1999</span></div>
                             <div><span class="text-slate-400">الاستوديو:</span> <span class="text-blue-300">Toei Animation</span></div>
+                            <div><span class="text-slate-400">المخرج:</span> <span class="text-blue-300">كوهي كوداما</span></div>
                         </div>
+                    </div>
+                    
+                    <div class="glass p-4 md:p-6 rounded-2xl">
+                        <button onclick="addToFavorites('one-piece')" class="w-full py-2 px-4 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 rounded-lg transition font-bold flex items-center justify-center gap-2">
+                            <i class="fas fa-heart"></i> أضف للمفضلة
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Death Note Section -->
-        <section id="death-note" class="mb-12">
-            <div class="section-title">
-                <h2 class="text-2xl font-bold">مذكرة الموت - جميع الحلقات (37)</h2>
+        <!-- Popular Section -->
+        <section id="popular" class="mb-12">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded"></div>
+                <h2 class="text-2xl md:text-3xl font-bold">الأنميات الشهيرة</h2>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2">
-                    <div class="glass p-6 rounded-2xl mb-6">
-                        <div class="flex items-start gap-4 mb-6">
-                            <img src="assets/death-note.jpg" alt="Death Note" class="w-32 h-48 object-cover rounded-lg shadow-lg">
-                            <div>
-                                <h3 class="text-2xl font-bold text-blue-400 mb-2">مذكرة الموت</h3>
-                                <p class="text-slate-400 mb-4">Death Note - سلسلة أنمي يابانية درامية نفسية تدور حول طالب ثانوي يكتشف دفتراً غامضاً يمنحه قوة قتل أي شخص.</p>
-                                <div class="flex gap-4 text-sm">
-                                    <span class="text-yellow-400"><i class="fas fa-star ml-1"></i>8.6/10</span>
-                                    <span class="text-blue-400"><i class="fas fa-play-circle ml-1"></i>37 حلقة</span>
-                                    <span class="text-green-400"><i class="fas fa-check-circle ml-1"></i>مكتمل</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass p-6 rounded-2xl">
-                        <h3 class="text-xl font-bold mb-4">قائمة الحلقات</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 1, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 1</div>
-                                <div class="text-xs text-slate-400">الولادة الجديدة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 2, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 2</div>
-                                <div class="text-xs text-slate-400">المواجهة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 3, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 3</div>
-                                <div class="text-xs text-slate-400">الصفقات</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 4, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 4</div>
-                                <div class="text-xs text-slate-400">المطاردة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 5, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 5</div>
-                                <div class="text-xs text-slate-400">التكتيكات</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 6, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 6</div>
-                                <div class="text-xs text-slate-400">فضح الأقنعة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 7, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 7</div>
-                                <div class="text-xs text-slate-400">المتأخر</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 8, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 8</div>
-                                <div class="text-xs text-slate-400">النظرة الحادة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 9, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 9</div>
-                                <div class="text-xs text-slate-400">الرهان</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 10, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 10</div>
-                                <div class="text-xs text-slate-400">القناعة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 11, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 11</div>
-                                <div class="text-xs text-slate-400">عدم الصبر</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 12, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 12</div>
-                                <div class="text-xs text-slate-400">الولادة الجديدة 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 13, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 13</div>
-                                <div class="text-xs text-slate-400">الاعتراف</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 14, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 14</div>
-                                <div class="text-xs text-slate-400">الاقتراح</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 15, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 15</div>
-                                <div class="text-xs text-slate-400">الرهان 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 16, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 16</div>
-                                <div class="text-xs text-slate-400">التنفيذ</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 17, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 17</div>
-                                <div class="text-xs text-slate-400">التنفيذ 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 18, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 18</div>
-                                <div class="text-xs text-slate-400">ماتسودا</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 19, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 19</div>
-                                <div class="text-xs text-slate-400">التحكيم</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 20, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 20</div>
-                                <div class="text-xs text-slate-400">التحكيم 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 21, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 21</div>
-                                <div class="text-xs text-slate-400">ماتسودا 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 22, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 22</div>
-                                <div class="text-xs text-slate-400">لند إل تايلور</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 23, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 23</div>
-                                <div class="text-xs text-slate-400">الخلافة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 24, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 24</div>
-                                <div class="text-xs text-slate-400">عالم جديد</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 25, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 25</div>
-                                <div class="text-xs text-slate-400">الصمت</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 26, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 26</div>
-                                <div class="text-xs text-slate-400">مظهر جديد</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 27, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 27</div>
-                                <div class="text-xs text-slate-400">الإلهاء</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 28, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 28</div>
-                                <div class="text-xs text-slate-400">الاعتراف 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 29, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 29</div>
-                                <div class="text-xs text-slate-400">الظروف</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 30, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 30</div>
-                                <div class="text-xs text-slate-400">محو</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 31, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 31</div>
-                                <div class="text-xs text-slate-400">الظهور</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 32, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 32</div>
-                                <div class="text-xs text-slate-400">الفخ</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 33, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 33</div>
-                                <div class="text-xs text-slate-400">الرائحة</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 34, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 34</div>
-                                <div class="text-xs text-slate-400">الجنون</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 35, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 35</div>
-                                <div class="text-xs text-slate-400">الحكم</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 36, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 36</div>
-                                <div class="text-xs text-slate-400">عالم جديد 2</div>
-                            </div>
-                            <div class="episode-item glass p-3 rounded-lg cursor-pointer hover:border-blue-500 border border-slate-700" onclick="playEpisode('Death Note', 37, 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                                <div class="text-sm font-bold">الحلقة 37</div>
-                                <div class="text-xs text-slate-400">النهاية</div>
-                            </div>
-                        </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                <div class="anime-card glass p-3 md:p-4 rounded-lg">
+                    <img src="assets/death-note.jpg" alt="Death Note" class="w-full h-48 object-cover rounded-lg mb-3">
+                    <h3 class="font-bold text-sm md:text-base mb-1">مذكرة الموت</h3>
+                    <p class="text-xs text-slate-400 mb-2">Death Note</p>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-yellow-400"><i class="fas fa-star"></i> 8.6</span>
+                        <button onclick="playEpisode('Death Note', 1, 'https://www.youtube.com/embed/dQw4w9WgXcQ')" class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded transition">تشغيل</button>
                     </div>
                 </div>
-
-                <div class="space-y-8">
-                    <div class="glass p-6 rounded-2xl">
-                        <h3 class="font-bold mb-4 text-blue-400"><i class="fas fa-info-circle ml-2"></i> معلومات</h3>
-                        <div class="space-y-3 text-sm">
-                            <div><span class="text-slate-400">النوع:</span> <span class="text-blue-300">غموض، نفسي</span></div>
-                            <div><span class="text-slate-400">الحالة:</span> <span class="text-green-300">مكتمل</span></div>
-                            <div><span class="text-slate-400">السنة:</span> <span class="text-blue-300">2006</span></div>
-                            <div><span class="text-slate-400">الاستوديو:</span> <span class="text-blue-300">Madhouse</span></div>
-                        </div>
+                
+                <div class="anime-card glass p-3 md:p-4 rounded-lg">
+                    <img src="assets/attack-on-titan.jpg" alt="Attack on Titan" class="w-full h-48 object-cover rounded-lg mb-3">
+                    <h3 class="font-bold text-sm md:text-base mb-1">هجوم العمالقة</h3>
+                    <p class="text-xs text-slate-400 mb-2">Attack on Titan</p>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-yellow-400"><i class="fas fa-star"></i> 9.0</span>
+                        <button onclick="playEpisode('Attack on Titan', 1, 'https://www.youtube.com/embed/dQw4w9WgXcQ')" class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded transition">تشغيل</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Anime List Section -->
-        <section id="anime-list" class="mb-12">
-            <div class="section-title">
-                <h2 class="text-2xl font-bold">قائمة الأنمي</h2>
+        <!-- Favorites Section -->
+        <section id="favorites" class="mb-12">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-1 h-8 bg-gradient-to-b from-pink-500 to-red-500 rounded"></div>
+                <h2 class="text-2xl md:text-3xl font-bold">المفضلة</h2>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                <div class="anime-card glass p-3 rounded-xl">
-                    <img src="assets/one-piece.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
-                    <h4 class="text-sm font-bold truncate">ون بيس</h4>
-                    <p class="text-xs text-slate-400">مغامرات، أكشن</p>
-                </div>
-                <div class="anime-card glass p-3 rounded-xl">
-                    <img src="assets/attack-on-titan.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
-                    <h4 class="text-sm font-bold truncate">هجوم العمالقة</h4>
-                    <p class="text-xs text-slate-400">دراما، خيال</p>
-                </div>
-                <div class="anime-card glass p-3 rounded-xl">
-                    <img src="assets/death-note.jpg" class="w-full h-48 object-cover rounded-lg shadow-lg mb-3">
-                    <h4 class="text-sm font-bold truncate">مذكرة الموت</h4>
-                    <p class="text-xs text-slate-400">غموض، نفسي</p>
-                </div>
+            <div id="favoritesContainer" class="glass p-6 rounded-2xl text-center">
+                <i class="fas fa-heart text-4xl text-slate-500 mb-4"></i>
+                <p class="text-slate-400">قم بتسجيل الدخول وأضف أنميات للمفضلة</p>
             </div>
         </section>
     </main>
 
-    <!-- Player Modal -->
-    <div id="playerModal" class="modal items-center justify-center">
-        <div class="modal-content p-8 m-4 w-full max-w-4xl">
+    <!-- Video Player Modal -->
+    <div id="playerModal" class="modal">
+        <div class="modal-content p-4 md:p-8 w-full md:w-4/5 lg:w-3/4">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="playerTitle" class="text-2xl font-bold text-blue-400"></h2>
-                <button onclick="closePlayer()" class="text-2xl text-slate-400 hover:text-white">&times;</button>
+                <h2 id="episodeTitle" class="text-xl md:text-2xl font-bold"></h2>
+                <button onclick="closeModal('playerModal')" class="text-2xl hover:text-red-500 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div id="playerContainer" class="player-container">
-                <iframe id="videoPlayer" frameborder="0" allowfullscreen></iframe>
+            <div class="player-container">
+                <iframe id="videoPlayer" src="" allowfullscreen></iframe>
+            </div>
+            <div class="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                <p id="episodeDescription" class="text-sm md:text-base text-slate-300"></p>
             </div>
         </div>
     </div>
 
-    <footer class="glass p-6 text-center text-sm text-slate-400 mt-12">
-        <p>&copy; 2026 AnimeMAD. جميع الحقوق محفوظة.</p>
-    </footer>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content p-6 md:p-8 w-full md:w-96">
+            <h2 class="text-2xl font-bold mb-6">تسجيل الدخول</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">البريد الإلكتروني</label>
+                    <input type="email" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">كلمة المرور</label>
+                    <input type="password" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg py-3 font-bold transition">دخول</button>
+            </form>
+            <button onclick="closeModal('loginModal')" class="w-full mt-4 py-2 text-slate-400 hover:text-white transition">إغلاق</button>
+        </div>
+    </div>
 
-    <script>
-        function playEpisode(anime, episode, videoUrl) {
-            document.getElementById('playerTitle').textContent = `${anime} - الحلقة ${episode}`;
-            document.getElementById('videoPlayer').src = videoUrl;
-            document.getElementById('playerModal').classList.add('active');
-        }
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content p-6 md:p-8 w-full md:w-96">
+            <h2 class="text-2xl font-bold mb-6">إنشاء حساب جديد</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">الاسم</label>
+                    <input type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">البريد الإلكتروني</label>
+                    <input type="email" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">كلمة المرور</label>
+                    <input type="password" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 rounded-lg py-3 font-bold transition">إنشاء حساب</button>
+            </form>
+            <button onclick="closeModal('registerModal')" class="w-full mt-4 py-2 text-slate-400 hover:text-white transition">إغلاق</button>
+        </div>
+    </div>
 
-        function closePlayer() {
-            document.getElementById('playerModal').classList.remove('active');
-            document.getElementById('videoPlayer').src = '';
-        }
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        document.getElementById('searchInput').addEventListener('keyup', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.anime-card').forEach(card => {
-                const title = card.querySelector('h4').textContent.toLowerCase();
-                card.style.display = title.includes(searchTerm) ? '' : 'none';
-            });
-        });
-    </script>
+    <script src="assets/app.js"></script>
 </body>
 </html>
