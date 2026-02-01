@@ -168,21 +168,31 @@ function initializeApp() {
     updateLanguage(currentLanguage);
 }
 
+function isEpisodeWatched(animeName, episodeNumber) {
+    return watchHistory.some(h => h.anime === animeName && h.episode === episodeNumber);
+}
+
 function loadOnePieceEpisodes() {
     const container = document.getElementById('onePieceEpisodes');
     if (!container) return;
     
-    container.innerHTML = onePieceEpisodes.slice(0, 5).map(ep => `
-        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
-            <div class="flex justify-between items-center">
-                <div>
-                    <div class="text-sm md:text-base font-bold">الحلقة ${ep.number}: ${ep.title}</div>
-                    <div class="text-xs text-slate-400">${ep.description}</div>
+    container.innerHTML = onePieceEpisodes.slice(0, 5).map(ep => {
+        const watched = isEpisodeWatched('One Piece', ep.number);
+        return `
+            <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer ${watched ? 'opacity-60 border-green-500/50' : ''}" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        ${watched ? '<i class="fas fa-check-circle text-green-500"></i>' : ''}
+                        <div>
+                            <div class="text-sm md:text-base font-bold ${watched ? 'text-slate-400' : ''}">الحلقة ${ep.number}: ${ep.title}</div>
+                            <div class="text-xs text-slate-400">${ep.description}</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-play ${watched ? 'text-slate-500' : 'text-blue-500'}"></i>
                 </div>
-                <i class="fas fa-play text-blue-500"></i>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ===== Language Management =====
@@ -355,14 +365,19 @@ function playEpisode(animeName, episodeNumber, videoUrl) {
     
     modal.classList.add('active');
     
-    // Add to watch history
-    if (currentUser) {
+    // Add to watch history (Automatic tracking)
+    const alreadyWatched = watchHistory.some(h => h.anime === animeName && h.episode === episodeNumber);
+    if (!alreadyWatched) {
         watchHistory.push({
             anime: animeName,
             episode: episodeNumber,
             date: new Date()
         });
         localStorage.setItem('watchHistory', JSON.stringify(watchHistory));
+        saveUserData();
+        
+        // Refresh episode lists to show watched status
+        loadOnePieceEpisodes();
     }
 }
 
@@ -436,17 +451,23 @@ function loadMoreEpisodes(animeId) {
     const container = document.getElementById('onePieceEpisodes');
     if (!container) return;
     
-    container.innerHTML = onePieceEpisodes.map(ep => `
-        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
-            <div class="flex justify-between items-center">
-                <div>
-                    <div class="text-sm md:text-base font-bold">الحلقة ${ep.number}: ${ep.title}</div>
-                    <div class="text-xs text-slate-400">${ep.description}</div>
+    container.innerHTML = onePieceEpisodes.map(ep => {
+        const watched = isEpisodeWatched('One Piece', ep.number);
+        return `
+            <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer ${watched ? 'opacity-60 border-green-500/50' : ''}" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        ${watched ? '<i class="fas fa-check-circle text-green-500"></i>' : ''}
+                        <div>
+                            <div class="text-sm md:text-base font-bold ${watched ? 'text-slate-400' : ''}">الحلقة ${ep.number}: ${ep.title}</div>
+                            <div class="text-xs text-slate-400">${ep.description}</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-play ${watched ? 'text-slate-500' : 'text-blue-500'}"></i>
                 </div>
-                <i class="fas fa-play text-blue-500"></i>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
     alert(`تم تحميل جميع ${onePieceEpisodes.length} حلقة من ون بيس!`);
 }
