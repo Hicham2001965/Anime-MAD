@@ -134,9 +134,9 @@ let watchHistory = [];
 
 // ===== One Piece Episodes Data =====
 const onePieceEpisodes = [
-    { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/watch.php?vid=392e874fe' },
-    { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو', url: 'https://dramacafe-tv.sbs/play.php?vid=6d9aeb092' },
-    { number: 3, title: 'الطاقم يتشكل', description: 'انضمام ناميه', url: 'https://dramacafe-tv.sbs/watch.php?vid=aeb2d605e' },
+    { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/embed.php?vid=392e874fe' },
+    { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو', url: 'https://dramacafe-tv.sbs/embed.php?vid=6d9aeb092' },
+    { number: 3, title: 'الطاقم يتشكل', description: 'انضمام ناميه', url: 'https://dramacafe-tv.sbs/embed.php?vid=aeb2d605e' },
     { number: 4, title: 'الخطر في الغابة', description: 'أول معركة حقيقية' },
     { number: 5, title: 'الوصول للقرية', description: 'مساعدة القرية' },
     { number: 6, title: 'معركة جديدة', description: 'تطور جديد في القصة' },
