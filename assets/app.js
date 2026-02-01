@@ -324,13 +324,8 @@ function playEpisode(animeName, episodeNumber, videoUrl) {
     
     title.textContent = `${animeName} - الحلقة ${episodeNumber}`;
     
-    // معالجة روابط dramacafe-tv
-    if (videoUrl.includes('dramacafe-tv')) {
-        // فتح الرابط في نافذة جديدة
-        window.open(videoUrl, '_blank');
-        description.textContent = `تم فتح الحلقة ${episodeNumber} في نافذة جديدة. استمتع بمشاهدة الأنمي!`;
-        player.src = '';
-    } else if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+    // معالجة الروابط لتشغيلها داخل النظام الداخلي
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
         // معالجة روابط YouTube
         let embedUrl = videoUrl;
         if (videoUrl.includes('watch?v=')) {
@@ -341,11 +336,11 @@ function playEpisode(animeName, episodeNumber, videoUrl) {
             embedUrl = `https://www.youtube.com/embed/${videoId}`;
         }
         player.src = embedUrl;
-        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName}. استمتع بمشاهدة الأنمي!`;
+        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
     } else {
-        // روابط أخرى
+        // تشغيل الروابط الأخرى (بما في ذلك dramacafe-tv) مباشرة في النظام الداخلي
         player.src = videoUrl;
-        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName}. استمتع بمشاهدة الأنمي!`;
+        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
     }
     
     modal.classList.add('active');
