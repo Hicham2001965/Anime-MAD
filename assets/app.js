@@ -84,7 +84,7 @@ const translations = {
         email: 'Email',
         password: 'Mot de passe',
         name: 'Nom',
-        createAccount: 'Créer un nouveau compte',
+        createAccount: 'Créر un nouveau compte',
         close: 'Fermer',
         totalAnimes: 'Total Animes',
         totalEpisodes: 'Total Épisodes',
@@ -136,14 +136,24 @@ let watchHistory = [];
 const onePieceEpisodes = [
     { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/embed.php?vid=392e874fe' },
     { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو', url: 'https://dramacafe-tv.sbs/embed.php?vid=6d9aeb092' },
-    { number: 3, title: 'الطاقم يتشكل', description: 'انضمام ناميه', url: 'https://dramacafe-tv.sbs/embed.php?vid=aeb2d605e' },
-    { number: 4, title: 'الخطر في الغابة', description: 'أول معركة حقيقية' },
-    { number: 5, title: 'الوصول للقرية', description: 'مساعدة القرية' },
-    { number: 6, title: 'معركة جديدة', description: 'تطور جديد في القصة' },
-    { number: 7, title: 'الطريق الطويل', description: 'رحلة جديدة تبدأ' },
-    { number: 8, title: 'الأصدقاء الجدد', description: 'لقاء مع شخصيات جديدة' },
-    { number: 9, title: 'التحديات تزداد', description: 'معارك أصعب تنتظرهم' },
-    { number: 10, title: 'الحلم الكبير', description: 'تحقيق الأحلام' }
+    { number: 3, title: 'الحلقة 3', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=aeb2d605e' },
+    { number: 4, title: 'الحلقة 4', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=f24e5181c' },
+    { number: 5, title: 'الحلقة 5', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=6ec40aad4' },
+    { number: 6, title: 'الحلقة 6', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=aed5c98c8' },
+    { number: 7, title: 'الحلقة 7', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=57798ae1d' },
+    { number: 8, title: 'الحلقة 8', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=434b4c7aa' },
+    { number: 9, title: 'الحلقة 9', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=b2a346d95' },
+    { number: 10, title: 'الحلقة 10', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=8a9168ab9' },
+    { number: 11, title: 'الحلقة 11', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=b297ed360' },
+    { number: 12, title: 'الحلقة 12', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=52003345a' },
+    { number: 13, title: 'الحلقة 13', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=71fc08fdd' },
+    { number: 14, title: 'الحلقة 14', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=0bfe87be5' },
+    { number: 15, title: 'الحلقة 15', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=e4e0ac8f3' },
+    { number: 16, title: 'الحلقة 16', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=61afbfdbf' },
+    { number: 17, title: 'الحلقة 17', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=0b5364c4d' },
+    { number: 18, title: 'الحلقة 18', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=fa87d702c' },
+    { number: 19, title: 'الحلقة 19', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=e75ed3b20' },
+    { number: 20, title: 'الحلقة 20', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=89bae7c4f' }
 ];
 
 // ===== Initialization =====
