@@ -136,7 +136,7 @@ let watchHistory = [];
 const onePieceEpisodes = [
     { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/embed.php?vid=392e874fe' },
     { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو', url: 'https://dramacafe-tv.sbs/embed.php?vid=6d9aeb092' },
-    { number: 3, title: 'الحلقة 3', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=aeb2d605e' },
+    { number: 3, title: 'الحلقة 3', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/watch.php?vid=aeb2d605e' },
     { number: 4, title: 'الحلقة 4', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=f24e5181c' },
     { number: 5, title: 'الحلقة 5', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=6ec40aad4' },
     { number: 6, title: 'الحلقة 6', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=aed5c98c8' },
@@ -359,7 +359,11 @@ function playEpisode(animeName, episodeNumber, videoUrl) {
         description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
     } else {
         // تشغيل الروابط الأخرى (بما في ذلك dramacafe-tv) مباشرة في النظام الداخلي
-        player.src = videoUrl;
+        let finalUrl = videoUrl;
+        if (videoUrl.includes('dramacafe-tv.sbs/watch.php')) {
+            finalUrl = videoUrl.replace('watch.php', 'embed.php');
+        }
+        player.src = finalUrl;
         description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
     }
     
