@@ -323,8 +323,30 @@ function playEpisode(animeName, episodeNumber, videoUrl) {
     const description = document.getElementById('episodeDescription');
     
     title.textContent = `${animeName} - الحلقة ${episodeNumber}`;
-    player.src = videoUrl;
-    description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName}. استمتع بمشاهدة الأنمي!`;
+    
+    // معالجة روابط dramacafe-tv
+    if (videoUrl.includes('dramacafe-tv')) {
+        // فتح الرابط في نافذة جديدة
+        window.open(videoUrl, '_blank');
+        description.textContent = `تم فتح الحلقة ${episodeNumber} في نافذة جديدة. استمتع بمشاهدة الأنمي!`;
+        player.src = '';
+    } else if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        // معالجة روابط YouTube
+        let embedUrl = videoUrl;
+        if (videoUrl.includes('watch?v=')) {
+            const videoId = videoUrl.split('v=')[1].split('&')[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (videoUrl.includes('youtu.be/')) {
+            const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+        player.src = embedUrl;
+        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName}. استمتع بمشاهدة الأنمي!`;
+    } else {
+        // روابط أخرى
+        player.src = videoUrl;
+        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName}. استمتع بمشاهدة الأنمي!`;
+    }
     
     modal.classList.add('active');
     
