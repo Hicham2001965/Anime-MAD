@@ -134,7 +134,7 @@ let watchHistory = [];
 
 // ===== One Piece Episodes Data =====
 const onePieceEpisodes = [
-    { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي' },
+    { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/watch.php?vid=392e874fe' },
     { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو' },
     { number: 3, title: 'الطاقم يتشكل', description: 'انضمام ناميه' },
     { number: 4, title: 'الخطر في الغابة', description: 'أول معركة حقيقية' },
@@ -163,7 +163,7 @@ function loadOnePieceEpisodes() {
     if (!container) return;
     
     container.innerHTML = onePieceEpisodes.slice(0, 5).map(ep => `
-        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
+        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
             <div class="flex justify-between items-center">
                 <div>
                     <div class="text-sm md:text-base font-bold">الحلقة ${ep.number}: ${ep.title}</div>
@@ -410,7 +410,7 @@ function loadMoreEpisodes(animeId) {
     if (!container) return;
     
     container.innerHTML = onePieceEpisodes.map(ep => `
-        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, 'https://www.youtube.com/embed/RS7mk-UtdjQ')">
+        <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
             <div class="flex justify-between items-center">
                 <div>
                     <div class="text-sm md:text-base font-bold">الحلقة ${ep.number}: ${ep.title}</div>
