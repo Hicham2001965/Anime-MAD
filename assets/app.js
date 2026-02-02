@@ -1,568 +1,150 @@
-// ===== Translations =====
-const translations = {
-    ar: {
-        home: 'الرئيسية',
-        onePiece: 'ون بيس',
-        popular: 'الشهيرة',
-        favorites: 'المفضلة',
-        search: 'ابحث...',
-        login: 'تسجيل الدخول',
-        register: 'إنشاء حساب',
-        episodes: 'الحلقات',
-        info: 'معلومات',
-        addToFavorites: 'أضف للمفضلة',
-        viewMore: 'عرض المزيد من الحلقات',
-        genre: 'النوع',
-        status: 'الحالة',
-        year: 'السنة',
-        studio: 'الاستوديو',
-        director: 'المخرج',
-        ongoing: 'مستمر',
-        completed: 'مكتمل',
-        email: 'البريد الإلكتروني',
-        password: 'كلمة المرور',
-        name: 'الاسم',
-        createAccount: 'إنشاء حساب جديد',
-        close: 'إغلاق',
-        totalAnimes: 'إجمالي الأنميات',
-        totalEpisodes: 'إجمالي الحلقات',
-        averageRating: 'متوسط التقييم',
-        totalViews: 'إجمالي المشاهدات',
-        mostPopular: 'الأكثر شهرة',
-        popularAnimes: 'الأنميات الشهيرة'
-    },
-    en: {
-        home: 'Home',
-        onePiece: 'One Piece',
-        popular: 'Popular',
-        favorites: 'Favorites',
-        search: 'Search...',
-        login: 'Login',
-        register: 'Register',
-        episodes: 'Episodes',
-        info: 'Info',
-        addToFavorites: 'Add to Favorites',
-        viewMore: 'View More Episodes',
-        genre: 'Genre',
-        status: 'Status',
-        year: 'Year',
-        studio: 'Studio',
-        director: 'Director',
-        ongoing: 'Ongoing',
-        completed: 'Completed',
-        email: 'Email',
-        password: 'Password',
-        name: 'Name',
-        createAccount: 'Create New Account',
-        close: 'Close',
-        totalAnimes: 'Total Animes',
-        totalEpisodes: 'Total Episodes',
-        averageRating: 'Average Rating',
-        totalViews: 'Total Views',
-        mostPopular: 'Most Popular',
-        popularAnimes: 'Popular Animes'
-    },
-    fr: {
-        home: 'Accueil',
-        onePiece: 'One Piece',
-        popular: 'Populaire',
-        favorites: 'Favoris',
-        search: 'Rechercher...',
-        login: 'Connexion',
-        register: 'S\'inscrire',
-        episodes: 'Épisodes',
-        info: 'Infos',
-        addToFavorites: 'Ajouter aux favoris',
-        viewMore: 'Voir plus d\'épisodes',
-        genre: 'Genre',
-        status: 'Statut',
-        year: 'Année',
-        studio: 'Studio',
-        director: 'Réalisateur',
-        ongoing: 'En cours',
-        completed: 'Terminé',
-        email: 'Email',
-        password: 'Mot de passe',
-        name: 'Nom',
-        createAccount: 'Créر un nouveau compte',
-        close: 'Fermer',
-        totalAnimes: 'Total Animes',
-        totalEpisodes: 'Total Épisodes',
-        averageRating: 'Note Moyenne',
-        totalViews: 'Vues Totales',
-        mostPopular: 'Le Plus Populaire',
-        popularAnimes: 'Animes Populaires'
-    },
-    es: {
-        home: 'Inicio',
-        onePiece: 'One Piece',
-        popular: 'Popular',
-        favorites: 'Favoritos',
-        search: 'Buscar...',
-        login: 'Iniciar sesión',
-        register: 'Registrarse',
-        episodes: 'Episodios',
-        info: 'Información',
-        addToFavorites: 'Agregar a favoritos',
-        viewMore: 'Ver más episodios',
-        genre: 'Género',
-        status: 'Estado',
-        year: 'Año',
-        studio: 'Estudio',
-        director: 'Director',
-        ongoing: 'En curso',
-        completed: 'Completado',
-        email: 'Correo electrónico',
-        password: 'Contraseña',
-        name: 'Nombre',
-        createAccount: 'Crear nueva cuenta',
-        close: 'Cerrar',
-        totalAnimes: 'Total de Animes',
-        totalEpisodes: 'Total de Episodios',
-        averageRating: 'Calificación Promedio',
-        totalViews: 'Vistas Totales',
-        mostPopular: 'Lo Más Popular',
-        popularAnimes: 'Animes Populares'
-    }
-};
-
-// ===== Global Variables =====
-let currentLanguage = 'ar';
-let currentUser = null;
-let favorites = [];
-let watchHistory = [];
-
-// ===== One Piece Episodes Data =====
+// بيانات حلقات ون بيس (20 حلقة)
 const onePieceEpisodes = [
-    { number: 1, title: 'مغامرة جديدة', description: 'بداية أسطورية لقصة لوفي', url: 'https://dramacafe-tv.sbs/embed.php?vid=392e874fe' },
-    { number: 2, title: 'الكنز الأسطوري', description: 'لقاء مع زورو', url: 'https://dramacafe-tv.sbs/embed.php?vid=6d9aeb092' },
-    { number: 3, title: 'الحلقة 3', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/watch.php?vid=aeb2d605e' },
-    { number: 4, title: 'الحلقة 4', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=f24e5181c' },
-    { number: 5, title: 'الحلقة 5', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=6ec40aad4' },
-    { number: 6, title: 'الحلقة 6', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=aed5c98c8' },
-    { number: 7, title: 'الحلقة 7', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=57798ae1d' },
-    { number: 8, title: 'الحلقة 8', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=434b4c7aa' },
-    { number: 9, title: 'الحلقة 9', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=b2a346d95' },
-    { number: 10, title: 'الحلقة 10', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=8a9168ab9' },
-    { number: 11, title: 'الحلقة 11', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=b297ed360' },
-    { number: 12, title: 'الحلقة 12', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=52003345a' },
-    { number: 13, title: 'الحلقة 13', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=71fc08fdd' },
-    { number: 14, title: 'الحلقة 14', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=0bfe87be5' },
-    { number: 15, title: 'الحلقة 15', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=e4e0ac8f3' },
-    { number: 16, title: 'الحلقة 16', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=61afbfdbf' },
-    { number: 17, title: 'الحلقة 17', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=0b5364c4d' },
-    { number: 18, title: 'الحلقة 18', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=fa87d702c' },
-    { number: 19, title: 'الحلقة 19', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=e75ed3b20' },
-    { number: 20, title: 'الحلقة 20', description: 'مغامرة ون بيس مستمرة', url: 'https://dramacafe-tv.sbs/embed.php?vid=89bae7c4f' }
+    { number: 1, title: 'مغامرة جديدة', url: 'https://dramacafe-tv.sbs/embed.php?vid=392e874fe' },
+    { number: 2, title: 'الكنز الأسطوري', url: 'https://dramacafe-tv.sbs/embed.php?vid=6d9aeb092' },
+    { number: 3, title: 'الحلقة 3', url: 'https://dramacafe-tv.sbs/embed.php?vid=aeb2d605e' },
+    { number: 4, title: 'الحلقة 4', url: 'https://dramacafe-tv.sbs/embed.php?vid=f24e5181c' },
+    { number: 5, title: 'الحلقة 5', url: 'https://dramacafe-tv.sbs/embed.php?vid=6ec40aad4' },
+    { number: 6, title: 'الحلقة 6', url: 'https://dramacafe-tv.sbs/embed.php?vid=aed5c98c8' },
+    { number: 7, title: 'الحلقة 7', url: 'https://dramacafe-tv.sbs/embed.php?vid=57798ae1d' },
+    { number: 8, title: 'الحلقة 8', url: 'https://dramacafe-tv.sbs/embed.php?vid=434b4c7aa' },
+    { number: 9, title: 'الحلقة 9', url: 'https://dramacafe-tv.sbs/embed.php?vid=b2a346d95' },
+    { number: 10, title: 'الحلقة 10', url: 'https://dramacafe-tv.sbs/embed.php?vid=8a9168ab9' },
+    { number: 11, title: 'الحلقة 11', url: 'https://dramacafe-tv.sbs/embed.php?vid=b297ed360' },
+    { number: 12, title: 'الحلقة 12', url: 'https://dramacafe-tv.sbs/embed.php?vid=52003345a' },
+    { number: 13, title: 'الحلقة 13', url: 'https://dramacafe-tv.sbs/embed.php?vid=71fc08fdd' },
+    { number: 14, title: 'الحلقة 14', url: 'https://dramacafe-tv.sbs/embed.php?vid=0bfe87be5' },
+    { number: 15, title: 'الحلقة 15', url: 'https://dramacafe-tv.sbs/embed.php?vid=e4e0ac8f3' },
+    { number: 16, title: 'الحلقة 16', url: 'https://dramacafe-tv.sbs/embed.php?vid=61afbfdbf' },
+    { number: 17, title: 'الحلقة 17', url: 'https://dramacafe-tv.sbs/embed.php?vid=0b5364c4d' },
+    { number: 18, title: 'الحلقة 18', url: 'https://dramacafe-tv.sbs/embed.php?vid=fa87d702c' },
+    { number: 19, title: 'الحلقة 19', url: 'https://dramacafe-tv.sbs/embed.php?vid=e75ed3b20' },
+    { number: 20, title: 'الحلقة 20', url: 'https://dramacafe-tv.sbs/embed.php?vid=89bae7c4f' }
 ];
 
-// ===== Initialization =====
+// بيانات حلقات مفكرة الموت (37 حلقة)
+const deathNoteEpisodes = [
+    { number: 1, title: 'Rebirth', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=0' },
+    { number: 2, title: 'Confrontation', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=1' },
+    { number: 3, title: 'Dealings', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=2' },
+    { number: 4, title: 'Pursuit', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=3' },
+    { number: 5, title: 'Tactics', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=4' },
+    { number: 6, title: 'Unraveling', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=5' },
+    { number: 7, title: 'Overcast', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=6' },
+    { number: 8, title: 'Glare', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=7' },
+    { number: 9, title: 'Encounter', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=8' },
+    { number: 10, title: 'Doubt', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=9' },
+    { number: 11, title: 'Assault', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=10' },
+    { number: 12, title: 'Love', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=11' },
+    { number: 13, title: 'Confession', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=12' },
+    { number: 14, title: 'Friend', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=13' },
+    { number: 15, title: 'Wager', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=14' },
+    { number: 16, title: 'Decision', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=15' },
+    { number: 17, title: 'Execution', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=16' },
+    { number: 18, title: 'Ally', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=17' },
+    { number: 19, title: 'Matsuda', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=18' },
+    { number: 20, title: 'Makeshift', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=19' },
+    { number: 21, title: 'Performance', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=20' },
+    { number: 22, title: 'Guidance', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=21' },
+    { number: 23, title: 'Frenzy', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=22' },
+    { number: 24, title: 'Revival', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=23' },
+    { number: 25, title: 'Silence', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=24' },
+    { number: 26, title: 'Renewal', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=25' },
+    { number: 27, title: 'Abduction', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=26' },
+    { number: 28, title: 'Impatience', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=27' },
+    { number: 29, title: 'Father', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=28' },
+    { number: 30, title: 'Justice', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=29' },
+    { number: 31, title: 'Transfer', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=30' },
+    { number: 32, title: 'Selection', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=31' },
+    { number: 33, title: 'Scorn', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=32' },
+    { number: 34, title: 'Vigilance', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=33' },
+    { number: 35, title: 'Malice', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=34' },
+    { number: 36, title: '1.28', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=35' },
+    { number: 37, title: 'New World', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=36' }
+];
+
+// تهيئة التطبيق عند التحميل
 document.addEventListener('DOMContentLoaded', () => {
-    loadUserData();
-    initializeApp();
-    loadOnePieceEpisodes();
+    loadOnePiecePreview();
+    
+    // إغلاق القوائم عند الضغط خارجها
+    window.onclick = (event) => {
+        if (event.target.className === 'modal active') {
+            closeModal(event.target.id);
+        }
+        if (!event.target.closest('.relative')) {
+            document.getElementById('userMenu').classList.add('hidden');
+        }
+    };
 });
 
-function initializeApp() {
-    console.log('OtakuHub initialized');
-    updateLanguage(currentLanguage);
-}
-
-function isEpisodeWatched(animeName, episodeNumber) {
-    return watchHistory.some(h => h.anime === animeName && h.episode === episodeNumber);
-}
-
-function loadOnePieceEpisodes() {
+// تحميل معاينة حلقات ون بيس في الصفحة الرئيسية
+function loadOnePiecePreview() {
     const container = document.getElementById('onePieceEpisodes');
-    if (!container) return;
-    
-    container.innerHTML = onePieceEpisodes.slice(0, 5).map(ep => {
-        const watched = isEpisodeWatched('One Piece', ep.number);
-        return `
-            <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer ${watched ? 'opacity-60 border-green-500/50' : ''}" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        ${watched ? '<i class="fas fa-check-circle text-green-500"></i>' : ''}
-                        <div>
-                            <div class="text-sm md:text-base font-bold ${watched ? 'text-slate-400' : ''}">الحلقة ${ep.number}: ${ep.title}</div>
-                            <div class="text-xs text-slate-400">${ep.description}</div>
-                        </div>
-                    </div>
-                    <i class="fas fa-play ${watched ? 'text-slate-500' : 'text-blue-500'}"></i>
-                </div>
+    if (container) {
+        container.innerHTML = onePieceEpisodes.slice(0, 6).map(ep => `
+            <div class="episode-item p-3 flex justify-between items-center cursor-pointer" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url}')">
+                <span class="font-bold text-sm">الحلقة ${ep.number}: ${ep.title}</span>
+                <i class="fas fa-play-circle text-blue-500"></i>
             </div>
-        `;
-    }).join('');
-}
-
-// ===== Language Management =====
-function changeLanguage(lang) {
-    currentLanguage = lang;
-    document.documentElement.lang = lang;
-    
-    // Update active button
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    // Update text direction
-    if (lang === 'ar') {
-        document.documentElement.dir = 'rtl';
-    } else {
-        document.documentElement.dir = 'ltr';
-    }
-    
-    updateLanguage(lang);
-    localStorage.setItem('language', lang);
-}
-
-function updateLanguage(lang) {
-    const trans = translations[lang];
-    
-    // Update navigation links
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navTexts = ['الرئيسية', 'ون بيس', 'الشهيرة', 'المفضلة'];
-    
-    // Update search placeholder
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.placeholder = trans.search;
+        `).join('');
     }
 }
 
-// ===== Navigation =====
-function setActive(element) {
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    element.classList.add('active');
-}
-
-// ===== User Management =====
-function toggleUserMenu() {
-    const menu = document.getElementById('userMenu');
-    menu.classList.toggle('hidden');
-}
-
-function openLoginModal() {
-    closeModal('userMenu');
-    document.getElementById('loginModal').classList.add('active');
-}
-
-function openRegisterModal() {
-    closeModal('userMenu');
-    document.getElementById('registerModal').classList.add('active');
-}
-
-function handleLogin(event) {
-    event.preventDefault();
-    const email = event.target.querySelector('input[type="email"]').value;
-    const password = event.target.querySelector('input[type="password"]').value;
+// فتح نافذة الأنمي لعرض جميع الحلقات
+function openAnimeModal(animeName) {
+    const modal = document.getElementById('animeModal');
+    const title = document.getElementById('modalAnimeTitle');
+    const list = document.getElementById('modalEpisodesList');
     
-    // Simulate login
-    currentUser = {
-        id: Date.now(),
-        email: email,
-        name: email.split('@')[0],
-        loginDate: new Date()
-    };
+    title.innerText = animeName === 'One Piece' ? 'ون بيس - One Piece' : 'مذكرة الموت - Death Note';
+    const episodes = animeName === 'One Piece' ? onePieceEpisodes : deathNoteEpisodes;
     
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    closeModal('loginModal');
-    updateUserUI();
+    list.innerHTML = episodes.map(ep => `
+        <div class="episode-item p-3 flex justify-between items-center cursor-pointer" onclick="playEpisode('${animeName}', ${ep.number}, '${ep.url}')">
+            <span class="font-bold text-sm">الحلقة ${ep.number}: ${ep.title}</span>
+            <i class="fas fa-play text-blue-500 text-xs"></i>
+        </div>
+    `).join('');
     
-    alert(`مرحباً ${currentUser.name}! تم تسجيل الدخول بنجاح`);
+    openModal('animeModal');
 }
 
-function handleRegister(event) {
-    event.preventDefault();
-    const name = event.target.querySelector('input[type="text"]').value;
-    const email = event.target.querySelector('input[type="email"]').value;
-    const password = event.target.querySelector('input[type="password"]').value;
-    
-    // Simulate registration
-    currentUser = {
-        id: Date.now(),
-        name: name,
-        email: email,
-        registrationDate: new Date()
-    };
-    
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    closeModal('registerModal');
-    updateUserUI();
-    
-    alert(`مرحباً ${name}! تم إنشاء حسابك بنجاح`);
-}
-
-function logout() {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    updateUserUI();
-    alert('تم تسجيل الخروج بنجاح');
-}
-
-function updateUserUI() {
-    const userMenu = document.getElementById('userMenu');
-    
-    if (currentUser) {
-        userMenu.innerHTML = `
-            <div class="py-2 px-3 text-sm font-bold mb-2">مرحباً ${currentUser.name}</div>
-            <button onclick="viewProfile()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">الملف الشخصي</button>
-            <button onclick="viewWatchHistory()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">سجل المشاهدة</button>
-            <button onclick="logout()" class="w-full text-right py-2 px-3 hover:bg-red-500/20 rounded transition text-red-400">تسجيل الخروج</button>
-        `;
-    } else {
-        userMenu.innerHTML = `
-            <button onclick="openLoginModal()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">تسجيل الدخول</button>
-            <button onclick="openRegisterModal()" class="w-full text-right py-2 px-3 hover:bg-blue-500/20 rounded transition">إنشاء حساب</button>
-        `;
-    }
-}
-
-function viewProfile() {
-    if (currentUser) {
-        alert(`الملف الشخصي:\nالاسم: ${currentUser.name}\nالبريد: ${currentUser.email}`);
-    }
-}
-
-function viewWatchHistory() {
-    if (watchHistory.length === 0) {
-        alert('لا توجد حلقات في سجل المشاهدة');
-    } else {
-        alert(`سجل المشاهدة:\n${watchHistory.map(h => `${h.anime} - الحلقة ${h.episode}`).join('\n')}`);
-    }
-}
-
-// ===== Video Player =====
-function playEpisode(animeName, episodeNumber, videoUrl) {
+// تشغيل الحلقة في المشغل
+function playEpisode(anime, number, url) {
     const modal = document.getElementById('playerModal');
     const title = document.getElementById('episodeTitle');
     const player = document.getElementById('videoPlayer');
-    const description = document.getElementById('episodeDescription');
     
-    title.textContent = `${animeName} - الحلقة ${episodeNumber}`;
+    title.innerText = `${anime} - الحلقة ${number}`;
     
-    // معالجة الروابط لتشغيلها داخل النظام الداخلي
-    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-        // معالجة روابط YouTube
-        let embedUrl = videoUrl;
-        if (videoUrl.includes('watch?v=')) {
-            const videoId = videoUrl.split('v=')[1].split('&')[0];
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        } else if (videoUrl.includes('youtu.be/')) {
-            const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        }
-        player.src = embedUrl;
-        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
-    } else {
-        // تشغيل الروابط الأخرى (بما في ذلك dramacafe-tv) مباشرة في النظام الداخلي
-        let finalUrl = videoUrl;
-        if (videoUrl.includes('dramacafe-tv.sbs/watch.php')) {
-            finalUrl = videoUrl.replace('watch.php', 'embed.php');
-        }
-        player.src = finalUrl;
-        description.textContent = `جاري تشغيل الحلقة ${episodeNumber} من ${animeName} عبر النظام الداخلي. استمتع بمشاهدة الأنمي!`;
-    }
+    // إعادة تعيين الـ src لضمان تحميل نظيف
+    player.src = 'about:blank';
+    setTimeout(() => {
+        player.src = url;
+    }, 10);
     
-    modal.classList.add('active');
-    
-    // Add to watch history (Automatic tracking)
-    const alreadyWatched = watchHistory.some(h => h.anime === animeName && h.episode === episodeNumber);
-    if (!alreadyWatched) {
-        watchHistory.push({
-            anime: animeName,
-            episode: episodeNumber,
-            date: new Date()
-        });
-        localStorage.setItem('watchHistory', JSON.stringify(watchHistory));
-        saveUserData();
-        
-        // Refresh episode lists to show watched status
-        loadOnePieceEpisodes();
-    }
+    openModal('playerModal');
 }
 
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('active');
-    }
+// وظائف النوافذ المنبثقة
+function openModal(id) {
+    const modal = document.getElementById(id);
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('active'), 10);
+    document.getElementById('userMenu').classList.add('hidden');
 }
 
-// Close modal when clicking outside
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.remove('active');
-    }
-});
-
-// ===== Favorites Management =====
-function addToFavorites(animeId) {
-    if (!currentUser) {
-        alert('يجب تسجيل الدخول أولاً');
-        openLoginModal();
-        return;
-    }
-    
-    if (!favorites.includes(animeId)) {
-        favorites.push(animeId);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        alert('تم إضافة الأنمي للمفضلة');
-    } else {
-        alert('الأنمي موجود بالفعل في المفضلة');
-    }
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        if (id === 'playerModal') document.getElementById('videoPlayer').src = '';
+    }, 300);
 }
 
-function removeFromFavorites(animeId) {
-    favorites = favorites.filter(id => id !== animeId);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+// قائمة المستخدم
+function toggleUserMenu() {
+    document.getElementById('userMenu').classList.toggle('hidden');
 }
-
-// ===== Search Functionality =====
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            if (query.length > 0) {
-                performSearch(query);
-            }
-        });
-    }
-});
-
-function performSearch(query) {
-    const animes = [
-        { name: 'ون بيس', en: 'One Piece' },
-        { name: 'مذكرة الموت', en: 'Death Note' },
-        { name: 'هجوم العمالقة', en: 'Attack on Titan' },
-        { name: 'ناروتو', en: 'Naruto' },
-        { name: 'بليتش', en: 'Bleach' }
-    ];
-    
-    const results = animes.filter(anime => 
-        anime.name.includes(query) || anime.en.toLowerCase().includes(query)
-    );
-    
-    console.log('Search results:', results);
-}
-
-// ===== Load More Episodes =====
-function loadMoreEpisodes(animeId) {
-    const container = document.getElementById('onePieceEpisodes');
-    if (!container) return;
-    
-    container.innerHTML = onePieceEpisodes.map(ep => {
-        const watched = isEpisodeWatched('One Piece', ep.number);
-        return `
-            <div class="episode-item glass p-3 md:p-4 rounded-lg cursor-pointer ${watched ? 'opacity-60 border-green-500/50' : ''}" onclick="playEpisode('One Piece', ${ep.number}, '${ep.url || 'https://www.youtube.com/embed/RS7mk-UtdjQ'}')">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        ${watched ? '<i class="fas fa-check-circle text-green-500"></i>' : ''}
-                        <div>
-                            <div class="text-sm md:text-base font-bold ${watched ? 'text-slate-400' : ''}">الحلقة ${ep.number}: ${ep.title}</div>
-                            <div class="text-xs text-slate-400">${ep.description}</div>
-                        </div>
-                    </div>
-                    <i class="fas fa-play ${watched ? 'text-slate-500' : 'text-blue-500'}"></i>
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-    alert(`تم تحميل جميع ${onePieceEpisodes.length} حلقة من ون بيس!`);
-}
-
-// ===== Data Persistence =====
-function saveUserData() {
-    const data = {
-        currentUser,
-        favorites,
-        watchHistory,
-        language: currentLanguage
-    };
-    localStorage.setItem('otakuhubData', JSON.stringify(data));
-}
-
-function loadUserData() {
-    const data = localStorage.getItem('otakuhubData');
-    if (data) {
-        const parsed = JSON.parse(data);
-        currentUser = parsed.currentUser;
-        favorites = parsed.favorites || [];
-        watchHistory = parsed.watchHistory || [];
-        currentLanguage = parsed.language || 'ar';
-    }
-    
-    // Load from individual storage keys (legacy)
-    const user = localStorage.getItem('currentUser');
-    if (user) {
-        currentUser = JSON.parse(user);
-    }
-    
-    const favs = localStorage.getItem('favorites');
-    if (favs) {
-        favorites = JSON.parse(favs);
-    }
-    
-    const history = localStorage.getItem('watchHistory');
-    if (history) {
-        watchHistory = JSON.parse(history);
-    }
-    
-    updateUserUI();
-}
-
-// Save data before page unload
-window.addEventListener('beforeunload', saveUserData);
-
-// ===== Keyboard Shortcuts =====
-document.addEventListener('keydown', (e) => {
-    // ESC to close modal
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.modal.active').forEach(modal => {
-            modal.classList.remove('active');
-        });
-    }
-    
-    // Ctrl+K or Cmd+K for search
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.focus();
-        }
-    }
-});
-
-// ===== Responsive Menu =====
-function toggleMobileMenu() {
-    const menu = document.querySelector('.hidden.lg\\:flex');
-    if (menu) {
-        menu.classList.toggle('hidden');
-    }
-}
-
-// ===== Analytics (Optional) =====
-function trackEvent(eventName, eventData) {
-    console.log(`Event: ${eventName}`, eventData);
-    // Can be extended to send to analytics service
-}
-
-// Track page view
-trackEvent('page_view', {
-    page: 'home',
-    timestamp: new Date()
-});
-
-// ===== Service Worker Registration (Optional) =====
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(err => {
-        console.log('Service Worker registration failed:', err);
-    });
-}
-
-console.log('OtakuHub App Loaded Successfully');
