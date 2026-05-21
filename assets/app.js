@@ -61,6 +61,7 @@ const deathNoteEpisodes = [
     { number: 35, title: 'Malice', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=34' },
     { number: 36, title: '1.28', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=35' },
     { number: 37, title: 'New World', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=36' }
+    { number: 1000tajrib, title: 'Dealings', url: 'https://archive.org/embed/death-note-complete-2006-2007&playlist=1&item_index=2' },
 ];
 
 // تهيئة التطبيق عند التحميل
