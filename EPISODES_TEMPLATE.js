@@ -158,8 +158,13 @@ function createEmbedUrl(youtubeUrl) {
     const videoId = extractYouTubeId(youtubeUrl);
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
 }
-
+لانشاء الروابذ 
 // مثال على الاستخدام:
 // const url = 'https://www.youtube.com/watch?v=RS7mk-UtdjQ';
 // const embedUrl = createEmbedUrl(url);
 // console.log(embedUrl); // https://www.youtube.com/embed/RS7mk-UtdjQ
+استخدام روابط يوتوب youtub المعدلة خصيصا للتشغيل الداحلي في outakuhub مع Anim^mad 
+كل ما عليك هو الدخول الى الروابط مباشرة والتسجيل من خلال اول اسطر فيه كما سيتم الشرح لاحقا في github
+(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;     
+ هدا خير متال عن الروابط التي تشتغل داخل المتصفح بصفة مجانية بدول الخروج من التطبيق 
+// بمساعدة الدالة 
